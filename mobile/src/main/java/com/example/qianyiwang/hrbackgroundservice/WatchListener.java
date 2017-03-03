@@ -41,8 +41,8 @@ public class WatchListener extends WearableListenerService {
             String msg_watch = new String(messageEvent.getData());
             if(msg_watch.contains("hr:")){
 
-//                String hr = msgParsing(msg_watch);
-                sendUdp(msg_watch);
+                String hr = msgParsing(msg_watch);
+                sendUdp(hr);
                 broadCastIntent.putExtra("msg_watch", msg_watch);
                 sendBroadcast(broadCastIntent);
             }

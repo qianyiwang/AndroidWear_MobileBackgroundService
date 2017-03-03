@@ -28,17 +28,78 @@
             android:layout_height="wrap_content"
             android:text="Stop"/>
 
-        <!--<Button-->
-            <!--android:id="@+id/terminateBt"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Terminate"/>-->
+        <Button
+            android:id="@+id/bluetoothBt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADAS"/>
+
+        <TextView
+            android:id="@+id/hr_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/hr_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#ffcccccc"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/mapCmdIssued"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="ISSUE MAP"/>
+
+        <Button
+            android:id="@+id/mapCmdExeCuted"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="EXE MAP"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffcccccc"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addressCmdIssued"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="ISSUE ADDRESS"/>
+
+        <Button
+            android:id="@+id/addressCmdExecuted"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="EXE ADDRESS"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffcccccc"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/parkCmdIssued"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="ISSUE PARKING"/>
+
+        <Button
+            android:id="@+id/parkCmdExecuted"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="EXE PARKING"/>
+
+    </LinearLayout>
 </LinearLayout>

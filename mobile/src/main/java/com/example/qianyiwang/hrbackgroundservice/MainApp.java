@@ -23,20 +23,20 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Date;
 
 public class MainApp extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
 
     public static String START_ACTIVITY_PATH = "/from-phone";
     private Node mNode = null;
     private GoogleApiClient googleApiClient;
-    Button startBt, stopBt, terminateBt;
+    Button startBt, stopBt, adasBt, mapIssue, mapExe, addressIssue, addressExe, parkIssue, parkExe;
     ConnectUdp connectUdp;
     BroadcastReceiver broadcastReceiver;
     TextView hr_text;
-
+    DatagramPacket packet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +46,20 @@ public class MainApp extends AppCompatActivity implements GoogleApiClient.Connec
         startBt.setOnClickListener(this);
         stopBt = (Button)findViewById(R.id.stopBt);
         stopBt.setOnClickListener(this);
-//        terminateBt = (Button)findViewById(R.id.terminateBt) ;
-//        terminateBt.setOnClickListener(this);
+        adasBt = (Button)findViewById(R.id.bluetoothBt) ;
+        adasBt.setOnClickListener(this);
+        mapIssue = (Button)findViewById(R.id.mapCmdIssued);
+        mapIssue.setOnClickListener(this);
+        mapExe = (Button)findViewById(R.id.mapCmdExeCuted);
+        mapExe.setOnClickListener(this);
+        addressIssue = (Button) findViewById(R.id.addressCmdIssued);
+        addressIssue.setOnClickListener(this);
+        addressExe = (Button) findViewById(R.id.addressCmdExecuted);
+        addressExe.setOnClickListener(this);
+        parkIssue = (Button)findViewById(R.id.parkCmdIssued);
+        parkIssue.setOnClickListener(this);
+        parkExe = (Button)findViewById(R.id.parkCmdExecuted);
+        parkExe.setOnClickListener(this);
         hr_text = (TextView)findViewById(R.id.hr_text);
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -82,6 +94,9 @@ public class MainApp extends AppCompatActivity implements GoogleApiClient.Connec
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+        SendMessageToWatch sendMessageToWatch2 = new SendMessageToWatch();
+        sendMessageToWatch2.execute("stop");
+        stopService(new Intent(getBaseContext(), BluetoothService.class));
     }
 
     private void receiveBroadcast(Intent intent) {
@@ -106,19 +121,40 @@ public class MainApp extends AppCompatActivity implements GoogleApiClient.Connec
 
     @Override
     public void onClick(View view) {
+        SendUDP sendUDP = new SendUDP();
         switch (view.getId()){
             case R.id.startBt:
                 SendMessageToWatch sendMessageToWatch1 = new SendMessageToWatch();
                 sendMessageToWatch1.execute("start");
+
                 break;
             case R.id.stopBt:
                 SendMessageToWatch sendMessageToWatch2 = new SendMessageToWatch();
                 sendMessageToWatch2.execute("stop");
+                stopService(new Intent(getBaseContext(), BluetoothService.class));
                 break;
-//            case R.id.terminateBt:
-//                SendMessageToWatch sendMessageToWatch3 = new SendMessageToWatch();
-//                sendMessageToWatch3.execute("terminate");
-//                break;
+            case R.id.bluetoothBt:
+                startService(new Intent(getBaseContext(), BluetoothService.class));
+                break;
+
+            case R.id.mapCmdIssued:
+                sendUDP.execute("Human_GoogleMapCmdIssued");
+                break;
+            case R.id.mapCmdExeCuted:
+                sendUDP.execute("Human_GoogleMapCmdExecuted");
+                break;
+            case R.id.addressCmdIssued:
+                sendUDP.execute("Human_EnterAddressIssued");
+                break;
+            case R.id.addressCmdExecuted:
+                sendUDP.execute("Human_EnterAddressExecuted");
+                break;
+            case R.id.parkCmdIssued:
+                sendUDP.execute("Human_parkopediaIssued");
+                break;
+            case R.id.parkCmdExecuted:
+                sendUDP.execute("Human_parkopediaExecuted");
+                break;
         }
     }
 
@@ -155,6 +191,24 @@ public class MainApp extends AppCompatActivity implements GoogleApiClient.Connec
                 GlobalValues.udp_socket = new DatagramSocket();
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    // **********send UDP socket**********************
+    public class SendUDP extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            if(GlobalValues.udp_socket!=null){
+                for(String s: strings){
+                    packet = new DatagramPacket( s.getBytes(), s.getBytes().length, GlobalValues.udpAddress, GlobalValues.udpPort );
+                    try {
+                        GlobalValues.udp_socket.send(packet);
+                    } catch (IOException e) {
+                        Log.e("UDP error", "network not reachable");
+                    }
+                }
             }
             return null;
         }
